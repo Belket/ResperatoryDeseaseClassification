@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ static_url('css/styles.css') }}">
+    <!-- Scripts -->
+    <script type="text/javascript" src="{{ static_url('js/project_scripts.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('js/jquery-2.1.4.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <title>Respiratory Disease</title>
+</head>
+<body onload="initialize()">
+    <div class="row justify-content-center" style="padding: 20px 0;">
+        <div class="card" style="max-width: 960px">
+      
+            <div class="col justify-content-center">
+            <header class="card-header">
+                <h5 class="card-title" style="text-align: center">Кардиоскоринг</h5>
+                <p></p>
+            </header>
+            <img class="card-img" src="/static/img/back.jpg" alt="Card image">
+            <div class="card-img-overlay">
+                <div class="card-body">
+                    <form action="/home/" method="post">
+                        <form id="df_form" class="form" method="post" action enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="data_frame"> <p></p>
+                                    <div style="height:20px"></div>
+                                Выберите данные для обучения модели</label>
+                                <input type="file" class="form-control-file" id="data_frame">
+                                <small id="Help" class="form-text text-muted">Проверьте: ваш файл должен быть в формате: scv и содержать целевую переменную respiratory_disease и как минимум один признак. Внутри одного признака данные имеют одинаковый тип, данные не категориальные, числовые значения - типа float.</small>
+                            </div>
+                            <button type="button" class="load-content btn btn-secondary btn-sm" onclick="load_df()">
+                              Подтвердить данные
+                            </button>
+                        </form>
+                        <p>
+                        </p>
+                        <div class="form-group">
+                            <select type="text" class="form-control" id="filter_method" required>
+                                <option disabled selected hidden>Выберите метод фильтрации</option>
+                                {% for filter_method in filter_methods %}
+                                    <option value="{{filter_method['filter_method_id']}}">{{escape(filter_method['filter_method_name'])}}</option>
+                                {% end %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <select type="text" class="form-control" id="balancing_method" required>
+                                <option disabled selected hidden>Выберите метод балансировки классов</option>
+                                {% for balancing_method in balancing_methods %}
+                                    <option value="{{balancing_method['balancing_method_id']}}">{{escape(balancing_method['balancing_method_name'])}}</option>
+                                {% end %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <select type="text" class="form-control" id="model_method" required>
+                                <option disabled selected hidden>Выберите модель</option>
+                                {% for model_method in model_methods %}
+                                    <option value="{{model_method['model_method_id']}}">{{escape(model_method['model_method_name'])}}</option>
+                                {% end %}
+                            </select>
+                        </div>
+                        <button type="button" class="load-content btn btn-primary btn-sm" data-toggle="modal" data-target="#resModal" onclick="fit_model()">
+                              Обучить модель
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="resModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Результаты</h5>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div id="modal_body" class="modal-body">
+                                  <div id="mistake"></div>
+                                  <div id="accuracy"></div>
+                                  <div id="precision"></div>
+                                  <div id="recall"></div>
+                                  <div id="f_score"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <script>
+                            $('#exampleModal').modal({
+                              keyboard: false
+                            })
+                        </script>
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</body>
+</html>
